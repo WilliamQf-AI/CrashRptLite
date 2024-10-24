@@ -42,7 +42,7 @@ install(TARGETS libWinCrashpad
   OBJECTS DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
-install(DIRECTORY ./include/libWinCrashpad DESTINATION include)
+install(DIRECTORY ./include/WinCrashpad DESTINATION include)
 
 install(EXPORT winCrashpadConfig
   NAMESPACE libWinCrashpad::
