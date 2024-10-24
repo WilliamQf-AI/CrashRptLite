@@ -32,4 +32,6 @@ set_target_properties(WinCrashpad PROPERTIES
 
 set_property(TARGET WinCrashpad PROPERTY VS_DPI_AWARE "PerMonitor")
 
-install(TARGETS WinCrashpad)
+install(TARGETS WinCrashpad
+    RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/tools
+)
