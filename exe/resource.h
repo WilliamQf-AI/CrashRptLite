@@ -1,7 +1,3 @@
-//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ 生成的包含文件。
-// 供 CrashSender.rc 使用
-//
 #define IDM_ABOUTBOX                    0x0010
 #define IDR_MAINFRAME                   128
 #define IDC_MESSAGE_TEXT                131

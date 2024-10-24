@@ -1,12 +1,8 @@
-#ifndef _CRASHRPT_H_
-#define _CRASHRPT_H_
+#ifndef _WIN_CRASHPAD_H_
+#define _WIN_CRASHPAD_H_
 
 #include <windows.h>
 #include <dbghelp.h>
-
-#pragma comment(lib, "Version.lib")
-#pragma comment(lib, "Rpcrt4.lib")
-#pragma comment(lib, "dbghelp.lib")
 
 // Define SAL macros to be empty if some old Visual Studio used
 #ifndef __reserved
@@ -48,7 +44,7 @@
 #define CR_CPP_SIGSEGV 11            // C++ SIGSEGV signal (invalid storage access).
 #define CR_CPP_SIGTERM 12            // C++ SIGTERM signal (termination request).
 
-namespace CrashReport {
+namespace WinCrashpad {
 
 /*
   *  This structure contains information about the crash.
@@ -752,20 +748,6 @@ CRASHRPTAPI(int) crExceptionFilter(unsigned int code, __in_opt struct _EXCEPTION
 
 CRASHRPTAPI(int) crEmulateCrash(unsigned ExceptionType) throw(...);
 
-/*
-  * Gets the last CrashRpt error message.
-  * This function returns length of error message in characters. If output buffer is invalid, returns a negative number.
-  *
-  *  [out] pszBuffer Pointer to the buffer.
-  *  [in]  uBuffSize Size of buffer in characters.
-  *
-  *  remarks:
-  *    This function gets the last CrashRpt error message.
-  *    You can use this function to retrieve the text status of the last called CrashRpt function.
-  *
-  *    If buffer is too small for the error message, the message is truncated.
-  */
-CRASHRPTAPI(int) crGetLastErrorMsg(__out_ecount_z(uBuffSize) LPWSTR pszBuffer, UINT uBuffSize);
 
 // Helper wrapper classes
 #ifndef _CRASHRPT_NO_WRAPPERS
@@ -800,4 +782,4 @@ class CrThreadAutoInstallHelper {
 };
 }
 #endif  //!_CRASHRPT_NO_WRAPPERS
-#endif  //_CRASHRPT_H_
+#endif  //_WIN_CRASHPAD_H_

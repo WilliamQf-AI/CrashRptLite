@@ -9,8 +9,6 @@ add_definitions(-DUNICODE -D_UNICODE -D_CRT_SECURE_NO_DEPRECATE /wd4244 /wd4267)
 # Add include dir
 include_directories( ${CMAKE_SOURCE_DIR}/thirdparty/zlib )
 
-fix_default_compiler_settings()
-
 # Add library build target
 add_library(libpng STATIC ${source_files})
 

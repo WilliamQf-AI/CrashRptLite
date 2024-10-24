@@ -3,7 +3,7 @@
 #include <ShlObj.h>
 #include <time.h>
 
-namespace CrashReport {
+namespace WinCrashpad {
 CString Utility::getAppName() {
   TCHAR szFileName[_MAX_PATH];
   GetModuleFileName(NULL, szFileName, _MAX_FNAME);

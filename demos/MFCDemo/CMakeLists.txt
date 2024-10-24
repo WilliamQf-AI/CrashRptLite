@@ -26,8 +26,6 @@ list(APPEND source_files ./MFCDemo.rc )
 # Define _UNICODE (use wide-char encoding)
 add_definitions(-DUNICODE -D_UNICODE)
 
-fix_default_compiler_settings()
-
 # Add include dir
 include_directories(${CMAKE_SOURCE_DIR}/libcrashrpt/include)
 

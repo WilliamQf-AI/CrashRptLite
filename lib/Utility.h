@@ -4,7 +4,7 @@
 #include <atlstr.h>
 #include <vector>
 
-namespace CrashReport {
+namespace WinCrashpad {
 namespace Utility {
 // Returns base name of the EXE file that launched current process.
 CString getAppName();

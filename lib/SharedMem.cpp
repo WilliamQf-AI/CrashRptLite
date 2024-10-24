@@ -11,7 +11,7 @@ be found in the Authors.txt file in the root of the source tree.
 #include "stdafx.h"
 #include "SharedMem.h"
 
-namespace CrashReport {
+namespace WinCrashpad {
 CSharedMem::CSharedMem() {
   // Set internal variables to their default state
   m_uSize = 0;

@@ -4,7 +4,7 @@
 #include "SharedMem.h"
 #include "ScreenCap.h"
 
-using namespace CrashReport;
+using namespace WinCrashpad;
 
 // The structure describing a file item contained in crash report.
 struct ERIFileItem {

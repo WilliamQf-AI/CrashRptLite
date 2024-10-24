@@ -9,12 +9,10 @@ add_definitions(-DUNICODE -D_UNICODE -D_CRT_SECURE_NO_DEPRECATE /wd4127 /wd4131 
 # Add include dir
 include_directories( ${CMAKE_SOURCE_DIR}/thirdparty/zlib )
 
-fix_default_compiler_settings()
-
 # Add library build target
 add_library(minizip STATIC ${source_files})
 
 # Add linker input libraries
-target_link_libraries(minizip zlib)
+target_link_libraries(minizip PUBLIC zlib)
 
 set_target_properties(minizip PROPERTIES DEBUG_POSTFIX d )

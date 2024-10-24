@@ -1,12 +1,12 @@
 #pragma once
 #include "stdafx.h"
-#include "CrashRpt.h"
+#include "WinCrashpad/WinCrashpad.h"
 #include "Utility.h"
 #include "CritSec.h"
 #include "SharedMem.h"
 #include "Prefastdef.h"
 
-namespace CrashReport {
+namespace WinCrashpad {
 
 /* This structure contains pointer to the exception handlers for a thread.*/
 struct ThreadExceptionHandlers {
@@ -24,9 +24,6 @@ struct ThreadExceptionHandlers {
   void(__cdecl* m_prevSigILL)(int);   // Previous SIGILL handler
   void(__cdecl* m_prevSigSEGV)(int);  // Previous illegal storage access handler
 };
-
-// Sets the last error message (for the caller thread).
-int crSetErrorMsg(PWSTR pszErrorMsg);
 
 // This structure describes a file item (a file included into crash report).
 struct FileItem {
@@ -57,10 +54,8 @@ struct RegKeyInfo {
 // and launch crash report sender process.
 class CCrashHandler {
  public:
-  // Default constructor.
   CCrashHandler();
 
-  // Destructor.
   virtual ~CCrashHandler();
 
   // Initializes the crash handler object.

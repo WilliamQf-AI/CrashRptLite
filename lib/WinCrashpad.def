@@ -8,7 +8,6 @@ EXPORTS
    crGenerateErrorReport          @7 
    crExceptionFilter              @8  
    crEmulateCrash                 @9
-   crGetLastErrorMsg              @10
-   crAddRegKey                    @11
-   crAddScreenshot                @12
-   crSetCrashCallback             @13
+   crAddRegKey                    @10
+   crAddScreenshot                @11
+   crSetCrashCallback             @12

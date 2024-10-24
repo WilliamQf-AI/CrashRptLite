@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CrashReporter.h"
-#include "CrashRpt.h"
+#include "WinCrashpad/WinCrashpad.h"
 #include "Utility.h"
 #include "zip.h"
 #include "CrashInfoReader.h"

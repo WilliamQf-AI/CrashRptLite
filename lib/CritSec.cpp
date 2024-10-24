@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "CritSec.h"
 
-namespace CrashReport {
+namespace WinCrashpad {
 CCritSec::CCritSec() {
   InitializeCriticalSection(&m_CritSec);
 };
@@ -26,4 +26,4 @@ CAutoLock::CAutoLock(__in CCritSec* plock) {
 CAutoLock::~CAutoLock() {
   m_pLock->Unlock();
 };
-}  // namespace CrashReport
+}  // namespace WinCrashpad

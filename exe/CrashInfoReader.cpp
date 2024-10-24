@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CrashRpt.h"
+#include "WinCrashpad/WinCrashpad.h"
 #include "CrashInfoReader.h"
 #include "strconv.h"
 #include "tinyxml.h"
