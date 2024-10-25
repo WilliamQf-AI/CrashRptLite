@@ -1,23 +1,18 @@
-cmake_minimum_required (VERSION 3.16)
-project(ConsoleDemo)
+add_executable(ConsoleDemo 
+    ConsoleDemo.cpp
+)
 
-# Create the list of source files
-aux_source_directory( . source_files )
-file( GLOB header_files *.h )
+target_compile_definitions(ConsoleDemo PRIVATE UNICODE _UNICODE)
 
-# Define _UNICODE (use wide-char encoding)
-add_definitions(-DUNICODE -D_UNICODE)
+target_include_directories(ConsoleDemo PRIVATE ${CMAKE_SOURCE_DIR}/lib/include)
 
-# Add include dir
-include_directories(${CMAKE_SOURCE_DIR}/include 
-					${CMAKE_SOURCE_DIR}/libcrashrpt/Include )
+target_link_libraries(ConsoleDemo PRIVATE libWinCrashpad)
 
-# Add executable build target
-add_executable(ConsoleDemo ${source_files} ${header_files})
+set_target_properties(ConsoleDemo PROPERTIES 
+    OUTPUT_NAME ConsoleDemo
+    DEBUG_OUTPUT_NAME ConsoleDemo-d
+)
 
-# Add input link libraries
-target_link_libraries(ConsoleDemo libCrashRptLite)
-
-set_target_properties(ConsoleDemo PROPERTIES DEBUG_POSTFIX d )
-
-set_property(TARGET ConsoleDemo PROPERTY VS_DPI_AWARE "PerMonitor")
+set_target_properties(ConsoleDemo PROPERTIES
+	VS_DPI_AWARE "PerMonitor"
+)

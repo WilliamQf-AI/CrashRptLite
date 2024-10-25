@@ -442,7 +442,6 @@ CRASHRPTAPI(int) crEmulateCrash(unsigned ExceptionType) throw(...) {
 #ifndef WINCRASHPAD_STATIC_LIB
 BOOL APIENTRY DllMain(HANDLE hModule, DWORD dwReason, LPVOID /*lpReserved*/) {
   if (dwReason == DLL_PROCESS_ATTACH) {
-    // Save handle to the CrashRpt.dll module.
     WinCrashpad::g_hModuleCrashRpt = hModule;
   }
   else if (dwReason == DLL_THREAD_ATTACH) {

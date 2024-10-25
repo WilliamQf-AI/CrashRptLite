@@ -57,11 +57,9 @@ BOOL CrashReporter::Init(LPCTSTR szFileMappingName) {
 }
 
 BOOL CrashReporter::InitLog() {
-  // Check if we have already created log
   if (!m_sCrashLogFile.IsEmpty())
     return TRUE;
 
-  // Create directory where we will store recent crash logs
   CString sLogDir = m_CrashInfo.m_sUnsentCrashReportsFolder + _T("\\Logs");
   BOOL bCreateDir = Utility::CreateFolder(sLogDir);
   if (!bCreateDir) {
@@ -78,7 +76,7 @@ BOOL CrashReporter::InitLog() {
   _tcsftime(szDateTime, 64, _T("%Y%m%d-%H%M%S"), &timeinfo);
 
   CString sLogFile;
-  sLogFile.Format(_T("%s\\CrashRpt-Log-%s-{%s}.txt"), sLogDir, szDateTime, m_CrashInfo.GetReport(0)->GetCrashGUID());
+  sLogFile.Format(_T("%s\\Log-%s-{%s}.txt"), sLogDir, szDateTime, m_CrashInfo.GetReport(0)->GetCrashGUID());
   m_Assync.InitLogFile(sLogFile);
 
   m_sCrashLogFile = sLogFile;
@@ -109,12 +107,10 @@ BOOL CrashReporter::Run() {
 }
 
 int CrashReporter::GetStatus() {
-  // Return global error report delivery status
   return m_nStatus;
 }
 
 int CrashReporter::GetCurReport() {
-  // Returns the index of error report currently being sent
   return m_nCurReport;
 }
 

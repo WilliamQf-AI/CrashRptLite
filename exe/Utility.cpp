@@ -138,8 +138,7 @@ int Utility::GenerateGUID(CString& sGUID) {
 int Utility::GetOSFriendlyName(CString& sOSName) {
   sOSName.Empty();
   CRegKey regKey;
-  LONG lResult = regKey.Open(HKEY_LOCAL_MACHINE,
-                             _T("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion"), KEY_READ);
+  LONG lResult = regKey.Open(HKEY_LOCAL_MACHINE, _T("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion"), KEY_READ);
   if (lResult == ERROR_SUCCESS) {
     TCHAR buf[1024];
     ULONG buf_size = 0;
@@ -177,32 +176,13 @@ int Utility::GetOSFriendlyName(CString& sOSName) {
 }
 
 BOOL Utility::IsOS64Bit() {
-  BOOL b64Bit = FALSE;
-
-#ifdef _WIN64
-  // 64-bit applications always run under 64-bit Windows
-  return TRUE;
-#endif
-
-  // Check for 32-bit applications
-
-  typedef BOOL(WINAPI * PFNISWOW64PROCESS)(HANDLE, PBOOL);
-
-  HMODULE hKernel32 = LoadLibrary(_T("kernel32.dll"));
-  if (hKernel32 != NULL) {
-    PFNISWOW64PROCESS pfnIsWow64Process =
-        (PFNISWOW64PROCESS)GetProcAddress(hKernel32, "IsWow64Process");
-    if (pfnIsWow64Process == NULL) {
-      // If there is no IsWow64Process() API, than Windows is 32-bit for sure
-      FreeLibrary(hKernel32);
-      return FALSE;
-    }
-
-    pfnIsWow64Process(GetCurrentProcess(), &b64Bit);
-    FreeLibrary(hKernel32);
-  }
-
-  return b64Bit;
+  BOOL result = FALSE;
+  SYSTEM_INFO si;
+  RtlZeroMemory(&si, sizeof(SYSTEM_INFO));
+  GetNativeSystemInfo(&si);
+  if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64)
+    result = TRUE;
+  return result;
 }
 
 int Utility::GetGeoLocation(CString& sGeoLocation) {
@@ -325,8 +305,7 @@ void Utility::SetLayoutRTL(HWND hWnd) {
 
 CString Utility::FormatErrorMsg(DWORD dwErrorCode) {
   LPTSTR msg = 0;
-  FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER, NULL, dwErrorCode,
-                MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&msg, 0, NULL);
+  FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER, NULL, dwErrorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&msg, 0, NULL);
   CString str = msg;
   str.Replace(_T("\r\n"), _T(""));
   GlobalFree(msg);

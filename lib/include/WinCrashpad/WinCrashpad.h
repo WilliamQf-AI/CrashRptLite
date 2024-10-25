@@ -388,7 +388,9 @@ typedef struct tagCR_INSTALL_INFO {
   LPCWSTR pszErrorReportSaveDir;     // Directory where to save error reports.
   LPCWSTR pszRestartCmdLine;         // Command line for application restart (without executable name).
   LPCWSTR pszCustomCrashReportIcon;  // Custom icon used for Error Report dialog.
-  int nRestartTimeout;               // Timeout for application restart.
+  int nRestartTimeout;               // Timeout seconds for application restart.
+                                     // The application must works for at least nRestartTimeout seconds before crash.
+                                     // This might help to avoid cyclic error report generation when the application crashes on startup.
 } CR_INSTALL_INFO;
 
 typedef CR_INSTALL_INFO* PCR_INSTALL_INFO;

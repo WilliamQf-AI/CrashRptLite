@@ -35,7 +35,7 @@ set_target_properties(libWinCrashpad PROPERTIES
 )
 
 install(TARGETS libWinCrashpad
-  EXPORT winCrashpadConfig
+  EXPORT libWinCrashpadConfig
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -44,15 +44,15 @@ install(TARGETS libWinCrashpad
 
 install(DIRECTORY ./include/WinCrashpad DESTINATION include)
 
-install(EXPORT winCrashpadConfig
+install(EXPORT libWinCrashpadConfig
   NAMESPACE libWinCrashpad::
   DESTINATION share/libWinCrashpad
 )
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
-  winCrashpadConfigVersion.cmake
+  libWinCrashpadConfigVersion.cmake
   VERSION ${PROJECT_VERSION}
   COMPATIBILITY AnyNewerVersion
 )
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/winCrashpadConfigVersion.cmake DESTINATION share/libWinCrashpad)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libWinCrashpadConfigVersion.cmake DESTINATION share/libWinCrashpad)

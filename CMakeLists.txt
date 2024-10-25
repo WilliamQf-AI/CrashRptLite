@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake;${CMAKE_MODULE_PATH};")
 
 project(WinCrashpad
-  VERSION 1.0
+  VERSION 2.2
   LANGUAGES CXX
 )
 
@@ -12,7 +12,7 @@ endif()
 
 # Build options
 option(WINCRASHPAD_BUILD_SHARED_LIBS "If set (default), WinCrashpad are built as dynamic-link library, otherwise as static-link library." ON)
-option(WINCRASHPAD_BUILD_DEMOS "Build demo projects." OFF)
+option(WINCRASHPAD_BUILD_DEMOS "Build demo projects." ON)
 option(WINCRASHPAD_USE_STATIC_CRT "Set to ON to build with static CRT on Windows (/MT)." OFF)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)

@@ -26,8 +26,7 @@ BOOL ERIFileItem::GetFileInfo(HICON& hIcon, CString& sTypeName, LONGLONG& lSize)
   }
 
   // Get file icon and type name
-  SHGetFileInfo(m_sSrcFile, 0, &sfi, sizeof(sfi),
-                SHGFI_DISPLAYNAME | SHGFI_ICON | SHGFI_TYPENAME | SHGFI_SMALLICON);
+  SHGetFileInfo(m_sSrcFile, 0, &sfi, sizeof(sfi), SHGFI_DISPLAYNAME | SHGFI_ICON | SHGFI_TYPENAME | SHGFI_SMALLICON);
 
   hIcon = sfi.hIcon;
   sTypeName = sfi.szTypeName;
@@ -40,6 +39,7 @@ BOOL ERIFileItem::GetFileInfo(HICON& hIcon, CString& sTypeName, LONGLONG& lSize)
 }
 
 CErrorReportInfo::CErrorReportInfo() {
+  m_bOSIs64Bit = FALSE;
   m_bSelected = TRUE;
   m_DeliveryStatus = PENDING;
   m_dwGuiResources = 0;
@@ -525,15 +525,12 @@ void CCrashInfoReader::CollectMiscCrashInfo(CErrorReportInfo& eri) {
 
     // Read exception information from process memory
     if (m_pExInfo != NULL) {
-      if (ReadProcessMemory(hProcess, m_pExInfo, &buff, sizeof(EXCEPTION_POINTERS), &uBytesRead) &&
-          uBytesRead == sizeof(EXCEPTION_POINTERS)) {
+      if (ReadProcessMemory(hProcess, m_pExInfo, &buff, sizeof(EXCEPTION_POINTERS), &uBytesRead) && uBytesRead == sizeof(EXCEPTION_POINTERS)) {
         EXCEPTION_POINTERS* pExcPtrs = (EXCEPTION_POINTERS*)buff;
 
         if (pExcPtrs->ExceptionRecord != NULL) {
           DWORD64 dwExcRecordAddr = (DWORD64)pExcPtrs->ExceptionRecord;
-          if (ReadProcessMemory(hProcess, (LPCVOID)dwExcRecordAddr, &buff, sizeof(EXCEPTION_RECORD),
-                                &uBytesRead) &&
-              uBytesRead == sizeof(EXCEPTION_RECORD)) {
+          if (ReadProcessMemory(hProcess, (LPCVOID)dwExcRecordAddr, &buff, sizeof(EXCEPTION_RECORD), &uBytesRead) && uBytesRead == sizeof(EXCEPTION_RECORD)) {
             EXCEPTION_RECORD* pExcRec = (EXCEPTION_RECORD*)buff;
 
             eri.m_dwExceptionAddress = (DWORD64)pExcRec->ExceptionAddress;
@@ -551,8 +548,7 @@ void CCrashInfoReader::CollectMiscCrashInfo(CErrorReportInfo& eri) {
     typedef BOOL(WINAPI * LPGETPROCESSHANDLECOUNT)(HANDLE, PDWORD);
     HMODULE hKernel32 = LoadLibrary(_T("kernel32.dll"));
     if (hKernel32 != NULL) {
-      LPGETPROCESSHANDLECOUNT pfnGetProcessHandleCount =
-          (LPGETPROCESSHANDLECOUNT)GetProcAddress(hKernel32, "GetProcessHandleCount");
+      LPGETPROCESSHANDLECOUNT pfnGetProcessHandleCount = (LPGETPROCESSHANDLECOUNT)GetProcAddress(hKernel32, "GetProcessHandleCount");
       if (pfnGetProcessHandleCount != NULL) {
         // Get count of opened handles
         DWORD dwHandleCount = 0;
@@ -582,9 +578,9 @@ void CCrashInfoReader::CollectMiscCrashInfo(CErrorReportInfo& eri) {
 
     // Determine the period of time the process is working.
     FILETIME CreationTime, ExitTime, KernelTime, UserTime;
-    /*BOOL bGetTimes = */ GetProcessTimes(hProcess, &CreationTime, &ExitTime, &KernelTime,
-                                          &UserTime);
-    /*ATLASSERT(bGetTimes);*/
+    BOOL bGetTimes = GetProcessTimes(hProcess, &CreationTime, &ExitTime, &KernelTime, &UserTime);
+    ATLASSERT(bGetTimes);
+
     SYSTEMTIME AppStartTime;
     FileTimeToSystemTime(&CreationTime, &AppStartTime);
 
@@ -593,9 +589,8 @@ void CCrashInfoReader::CollectMiscCrashInfo(CErrorReportInfo& eri) {
     ULONG64 uCurTime = Utility::SystemTimeToULONG64(CurTime);
     ULONG64 uStartTime = Utility::SystemTimeToULONG64(AppStartTime);
 
-    // Check that the application works for at least one minute before crash.
-    // This might help to avoid cyclic error report generation when the applciation
-    // crashes on startup.
+    // Check that the application works for at least m_nRestartTimeout seconds before crash.
+    // This might help to avoid cyclic error report generation when the application crashes on startup.
     double dDiffTime = (double)(uCurTime - uStartTime) * 10E-08;
     if (dDiffTime < m_nRestartTimeout) {
       m_bAppRestart = FALSE;  // Disable restart.
@@ -681,9 +676,7 @@ int CCrashInfoReader::ParseRegKeyList(TiXmlHandle& hRoot, CErrorReportInfo& eri)
   return 0;
 }
 
-int CCrashInfoReader::ParseCrashDescription(CString sFileName,
-                                            BOOL bParseFileItems,
-                                            CErrorReportInfo& eri) {
+int CCrashInfoReader::ParseCrashDescription(CString sFileName, BOOL bParseFileItems, CErrorReportInfo& eri) {
   strconv_t strconv;
   FILE* f = NULL;
 
@@ -810,7 +803,6 @@ int CCrashInfoReader::ParseCrashDescription(CString sFileName,
   fclose(f);
   return 0;
 }
-
 
 BOOL CCrashInfoReader::AddUserInfoToCrashDescriptionXML(CString sEmail, CString sDesc) {
   strconv_t strconv;
@@ -946,8 +938,7 @@ BOOL CCrashInfoReader::AddFilesToCrashReport(int nReport, std::vector<ERIFileIte
     m_Reports[nReport].m_FileItems[FilesToAdd[i].m_sDestFile] = FilesToAdd[i];
 
     if (FilesToAdd[i].m_bMakeCopy) {
-      CString sDestPath =
-          m_Reports[nReport].m_sErrorReportDirName + _T("\\") + FilesToAdd[i].m_sDestFile;
+      CString sDestPath = m_Reports[nReport].m_sErrorReportDirName + _T("\\") + FilesToAdd[i].m_sDestFile;
       CopyFile(FilesToAdd[i].m_sSrcFile, sDestPath, TRUE);
       m_Reports[nReport].m_FileItems[FilesToAdd[i].m_sDestFile].m_sSrcFile = sDestPath;
     }
@@ -1004,8 +995,7 @@ BOOL CCrashInfoReader::RemoveFilesFromCrashReport(int nReport, std::vector<CStri
 
   unsigned i;
   for (i = 0; i < FilesToRemove.size(); i++) {
-    std::map<CString, ERIFileItem>::iterator it =
-        m_Reports[nReport].m_FileItems.find(FilesToRemove[i]);
+    std::map<CString, ERIFileItem>::iterator it = m_Reports[nReport].m_FileItems.find(FilesToRemove[i]);
     if (it == m_Reports[nReport].m_FileItems.end())
       continue;  // Such file item name does not exist, skip
 
@@ -1021,8 +1011,7 @@ BOOL CCrashInfoReader::RemoveFilesFromCrashReport(int nReport, std::vector<CStri
     }
 
     // Remove the file from error report directory
-    Utility::RecycleFile(
-        m_Reports[nReport].m_sErrorReportDirName + _T("\\") + it->second.m_sDestFile, TRUE);
+    Utility::RecycleFile(m_Reports[nReport].m_sErrorReportDirName + _T("\\") + it->second.m_sDestFile, TRUE);
 
     m_Reports[nReport].m_FileItems.erase(it);
   }

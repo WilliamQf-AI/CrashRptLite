@@ -62,10 +62,6 @@ int CCrashHandler::Init(LPCWSTR lpcszAppName,
                         LPCWSTR lpcszRestartCmdLine,
                         LPCWSTR lpcszCustomSenderIcon,
                         int nRestartTimeout) {
-  // This method initializes configuration parameters,
-  // creates shared memory buffer and saves the configuration parameters there,
-  // installs process-wide exception handlers.
-
   m_dwFlags = dwFlags;
 
   m_MinidumpType = MiniDumpType;
@@ -136,7 +132,7 @@ int CCrashHandler::Init(LPCWSTR lpcszAppName,
   if (lpcszCrashReportPath == NULL) {
     // By default assume that CrashReport.exe is located in the same folder as libcrashrpt.dll or current executable.
     m_sPathToCrashReport = Utility::GetModulePath((HMODULE)g_hModuleCrashRpt);
-    m_sPathToCrashReport += TEXT("\\crashreport.exe");
+    m_sPathToCrashReport += TEXT("\\WinCrashpad.exe");
   }
   else {
     // Save user-specified path
@@ -185,7 +181,7 @@ int CCrashHandler::Init(LPCWSTR lpcszAppName,
     CString sLocalAppDataFolder;
     DWORD dwCSIDL = CSIDL_LOCAL_APPDATA;
     Utility::GetSpecialFolder(dwCSIDL, sLocalAppDataFolder);
-    m_sUnsentCrashReportsFolder.Format(_T("%s\\CrashReports\\%s_%s"), sLocalAppDataFolder, m_sAppName, m_sAppVersion);
+    m_sUnsentCrashReportsFolder.Format(_T("%s\\WinCrashpad\\%s_%s"), sLocalAppDataFolder, m_sAppName, m_sAppVersion);
   }
   else {
     m_sUnsentCrashReportsFolder = lpcszErrorReportSaveDir;

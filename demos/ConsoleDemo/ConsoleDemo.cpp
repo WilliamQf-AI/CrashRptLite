@@ -4,48 +4,49 @@
 #include <assert.h>
 #include <process.h>
 #include <strsafe.h>
-#include "CrashRpt.h"
+#include "WinCrashpad/WinCrashpad.h"
 
-using namespace CrashReport;
+using namespace WinCrashpad;
 
 int main(int argc, char* argv[]) {
   UNREFERENCED_PARAMETER(argc);
   UNREFERENCED_PARAMETER(argv);
+
+  WCHAR szCurDir[MAX_PATH] = {0};
+  GetModuleFileNameW(NULL, szCurDir, _MAX_PATH);
+  WCHAR* ptr = wcsrchr(szCurDir, L'\\');
+  if (ptr != NULL)
+    *(ptr) = 0;  // remove executable name
+  WCHAR szWinCrashpadExePath[MAX_PATH];
+#if (defined DEBUG) || (defined _DEBUG)
+  StringCchPrintfW(szWinCrashpadExePath, MAX_PATH, L"%s\\%s", szCurDir, L"WinCrashpad-d.exe");
+#else
+  StringCchPrintfW(szWinCrashpadExePath, MAX_PATH, L"%s\\%s", szCurDir, L"WinCrashpad.exe");
+#endif
 
   // Install crash reporting
   //
   CR_INSTALL_INFO info;
   memset(&info, 0, sizeof(CR_INSTALL_INFO));
   info.cb = sizeof(CR_INSTALL_INFO);           // Size of the structure
-  info.pszAppName = L"CrashRpt Console Test";  // App name
+  info.pszAppName = L"WinCrashpad Console Test";  // App name
   info.pszAppVersion = L"1.0.0";               // App version
-#ifdef _DEBUG
-  WCHAR szCurDir[MAX_PATH] = {0};
-  GetModuleFileNameW(NULL, szCurDir, _MAX_PATH);
-  WCHAR* ptr = wcsrchr(szCurDir, L'\\');
-  if (ptr != NULL)
-    *(ptr) = 0;  // remove executable name
-  WCHAR szCrashReportDebugPath[MAX_PATH];
-  StringCchPrintfW(szCrashReportDebugPath, MAX_PATH, L"%s\\%s", szCurDir, L"CrashReportd.exe");
-  info.pszCrashReportPath = szCrashReportDebugPath;
-#endif
+  info.pszCrashReportPath = szWinCrashpadExePath;
+  info.nRestartTimeout = 3; // 3s
   info.dwFlags = CR_INST_ALL_POSSIBLE_HANDLERS | CR_INST_STORE_ZIP_ARCHIVES | CR_INST_APP_RESTART;
 
   // Install crash handlers
   int nInstResult = crInstall(&info);
   assert(nInstResult == 0);
 
-  crAddFile(L"D:\\1989.mp4", nullptr, L"description", CR_AF_MAKE_FILE_COPY);
+  crAddFile(L"C:\\1989.mp4", nullptr, L"description", CR_AF_MAKE_FILE_COPY);
 
-  crAddScreenshot(CR_AS_PROCESS_WINDOWS, 0);
+  crAddScreenshot(CR_AS_VIRTUAL_SCREEN, 0);
 
-  crAddRegKey(L"HKEY_LOCAL_MACHINE\\SOFTWARE\\XXX", L"regkey.xml", 0);
+  crAddRegKey(L"HKEY_CURRENT_USER\\SOFTWARE\\", L"regkey.xml", 0);
 
   // Check result
   if (nInstResult != 0) {
-    WCHAR buff[256];
-    crGetLastErrorMsg(buff, 256);                // Get last error
-    StringCchPrintfW(buff, 256, L"%s\n", buff);  // and output it to the screen
     return FALSE;
   }
 

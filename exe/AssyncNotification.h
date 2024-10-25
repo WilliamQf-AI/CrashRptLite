@@ -1,23 +1,7 @@
-/************************************************************************************* 
-This file is a part of CrashRpt library.
-Copyright (c) 2003-2013 The CrashRpt project authors. All Rights Reserved.
-
-Use of this source code is governed by a BSD-style license
-that can be found in the License.txt file in the root of the source
-tree. All contributing project authors may
-be found in the Authors.txt file in the root of the source tree.
-***************************************************************************************/
-
-// File: AssyncNotification.h
-// Description: Provides a way to communicate between worker thread and the main thread.
-// Authors: zexspectrum
-// Date: 2009
-
 #pragma once
 #include "stdafx.h"
 
 struct AssyncNotification {
-  /* Constructor */
   AssyncNotification();
   ~AssyncNotification();
 
@@ -26,7 +10,6 @@ struct AssyncNotification {
 
   CString GetLogFilePath();
 
-  // Resets the event
   void Reset();
 
   // Sets the progress message and percent completed

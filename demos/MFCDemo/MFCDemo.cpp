@@ -18,9 +18,9 @@ be found in the Authors.txt file in the root of the source tree.
 #include "ChildFrm.h"
 #include "MFCDemoDoc.h"
 #include "MFCDemoView.h"
-#include "CrashRpt.h"
+#include "WinCrashpad/WinCrashpad.h"
 
-using namespace CrashReport;
+using namespace WinCrashpad;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -139,9 +139,7 @@ int CMFCDemoApp::Run()
   int nResult = crInstall(&info);
   if(nResult!=0)
   {
-    TCHAR buff[256];
-    crGetLastErrorMsg(buff, 256);
-    MessageBox(NULL, buff, _T("crInstall error"), MB_OK);
+    MessageBox(NULL, _T("crInstall error"), _T("MFCDemo"), MB_OK);
     return 1;
   }
 
